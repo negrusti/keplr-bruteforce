@@ -40,6 +40,7 @@ select_all_checkbox_x = '//*[@id="app"]/div/div[2]/div/div/div/div/div/div[7]'
 # SCRIPT
 chop = webdriver.ChromeOptions()
 chop.add_experimental_option("detach", True)
+chop.add_argument("--disable-usb-devices")
 chop.add_extension(KEPLR)
 driver = webdriver.Chrome(options=chop)
 driver.implicitly_wait(30)
@@ -150,23 +151,6 @@ def recovery_short(input_position):
         except NoSuchElementException as e:
             print(f'[ERROR] Stop on Word: {word}', e)
     return None
-
-
-def all_rec(current):
-    for i in range(current, 13):
-        recovery_script(i)
-
-
-def first_rec():
-    recovery_script(0)
-
-
-def last_rec():
-    recovery_script(11)
-
-
-def short_rec(current):
-    recovery_short(current)
 
 
 if __name__ == '__main__':
