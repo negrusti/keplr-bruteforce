@@ -41,7 +41,7 @@ select_all_checkbox_x = '//*[@id="app"]/div/div[2]/div/div/div/div/div/div[7]'
 chop = webdriver.ChromeOptions()
 chop.add_experimental_option("detach", True)
 chop.add_argument("--disable-usb-devices")
-chop.add_argument("--kiosk")
+# chop.add_argument("--kiosk")
 chop.add_extension(KEPLR)
 driver = webdriver.Chrome(options=chop)
 driver.implicitly_wait(10)
