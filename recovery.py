@@ -75,7 +75,7 @@ def recovery_script(input_position):
             results_usd = driver.find_element(By.XPATH, all_coins_block_x).text.split()
             non_zero_values = any(item.replace('.', '', 1).isdigit() and float(item) != 0 for item in results_usd)
             if non_zero_values:
-                modify[i] = word
+                modify[input_position] = word
                 print(*modify)
                 print(results_usd)
                 with open('results.txt', 'a') as file:
@@ -110,7 +110,7 @@ def first_rec():
 
 
 def last_rec():
-    recovery_script(12)
+    recovery_script(11)
 
 
 if __name__ == '__main__':
