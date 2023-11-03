@@ -2,7 +2,8 @@ import time
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 import argparse
-from selenium.common import NoSuchElementException, TimeoutException, NoAlertPresentException
+from selenium.common import NoSuchElementException, TimeoutException, NoAlertPresentException, \
+    ElementClickInterceptedException
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -87,7 +88,14 @@ def recovery_script(input_position):
                     driver.find_element(By.XPATH, input_password_x).send_keys(PASSWORD)
                     driver.find_element(By.XPATH, input_confirm_x).send_keys(PASSWORD)
                     driver.find_element(By.XPATH, next_button_x).click()
-                driver.find_element(By.XPATH, select_all_checkbox_x).click()
+                wait = WebDriverWait(driver, 10)
+                element = wait.until(expected_conditions.element_to_be_clickable((By.XPATH, select_all_checkbox_x)))
+                try:
+                    element.click()
+                except ElementClickInterceptedException:
+                    print('[WARNING] Select all checkbox failed by click()')
+                    driver.execute_script("arguments[0].click();", element)
+                # driver.find_element(By.XPATH, select_all_checkbox_x).click()
                 results_usd = driver.find_element(By.XPATH, all_coins_block_x).text.split()
                 non_zero_values = any(item.replace('.', '', 1).isdigit() and float(item) != 0 for item in results_usd)
                 if non_zero_values:
@@ -150,7 +158,11 @@ def recovery_short(input_position):
                 print('Results written to file', '\n')
                 wait = WebDriverWait(driver, 10)
                 element = wait.until(expected_conditions.element_to_be_clickable((By.XPATH, back_button_x)))
-                element.click()
+                try:
+                    element.click()
+                except ElementClickInterceptedException:
+                    print('[WARNING] Back Button failed by click()')
+                    driver.execute_script("arguments[0].click();", element)
         except NoSuchElementException as e:
             print(f'[ERROR] Stop on Word: {word}', e)
     return None
@@ -166,6 +178,8 @@ if __name__ == '__main__':
     group.add_argument('--all', action='store_true', help='Run for ALL inputs')
     group.add_argument('--first', action='store_true', help='Run only First input')
     group.add_argument('--last', action='store_true', help='Run only Last input')
+
+    parser.set_defaults(deep=True, all=True)
 
     args = parser.parse_args()
 
@@ -186,4 +200,4 @@ if __name__ == '__main__':
         elif args.last:
             recovery_short(11)
     else:
-        print('Please specify a valid flag: --deep or --short and --all, --first or --last ')
+        print('Please specify a valid flag: --short or --all, --first or --last')
