@@ -19,17 +19,21 @@ Execute command "python recovery.py" in files directory
 Available flags: '--all' for run All inputs in input block
                  '--first' for run only first input
                  '--last' for run only last input
+                 '--short' for run script without enter inside wallet
 
 = RESULTS:
-All results are written to the file - "results.txt".
+All results from script with entering wallet write to "results.txt".
 Format inside:  recovery words: list
                 all not zero coins: list
 
+All results from short script without entering wallet write to "results_short.txt".
+Format inside: recovery words: list
+
 
 = ADDITIONAL SETTINGS:
-You can change Input position in recovery inputs block by change var CURRENT_POSITION in var.py
-Available numbers from 0 to 12 (int)!
+You can change Input position in recovery inputs block by change var CURRENT_POSITION in your settings.yaml
+Available numbers from 0 to 11 (int)!
 
-All recovery words are saved to "words" var in vars.py.
+All existing words are saved to "allWords.txt".
 
-Additional CSS Selector are saved in the end of the file vars.py.
+Additional CSS Selector are saved in the file "cssSettings.yaml".
