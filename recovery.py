@@ -41,9 +41,10 @@ select_all_checkbox_x = '//*[@id="app"]/div/div[2]/div/div/div/div/div/div[7]'
 chop = webdriver.ChromeOptions()
 chop.add_experimental_option("detach", True)
 chop.add_argument("--disable-usb-devices")
+chop.add_argument("--kiosk")
 chop.add_extension(KEPLR)
 driver = webdriver.Chrome(options=chop)
-driver.implicitly_wait(30)
+driver.implicitly_wait(10)
 
 driver.get("https://example.com")
 driver.close()
@@ -147,7 +148,9 @@ def recovery_short(input_position):
                 with open('results_short.txt', 'a') as file:
                     file.write(f'Words: {modify}\n')
                 print('Results written to file', '\n')
-                driver.find_element(By.XPATH, back_button_x).click()
+                wait = WebDriverWait(driver, 10)
+                element = wait.until(expected_conditions.element_to_be_clickable((By.XPATH, back_button_x)))
+                element.click()
         except NoSuchElementException as e:
             print(f'[ERROR] Stop on Word: {word}', e)
     return None
