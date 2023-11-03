@@ -171,20 +171,32 @@ def short_rec(current):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Recovery Script')
-    parser.add_argument('--all', action='store_true', help='Run for ALL inputs')
-    parser.add_argument('--first', action='store_true', help='Run only First input')
-    parser.add_argument('--last', action='store_true', help='Run only Last input')
-    parser.add_argument('--short', action='store_true', help='Run without entering inside wallet')
+
+    parser.add_argument('--deep', action='store_true', help='Run deep recovery')
+    parser.add_argument('--short', action='store_true', help='Run short recovery')
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--all', action='store_true', help='Run for ALL inputs')
+    group.add_argument('--first', action='store_true', help='Run only First input')
+    group.add_argument('--last', action='store_true', help='Run only Last input')
 
     args = parser.parse_args()
 
-    if args.all:
-        all_rec(CURRENT_POSITION)
-    elif args.first:
-        first_rec()
-    elif args.last:
-        last_rec()
+    if args.deep:
+        if args.all:
+            for i in range(CURRENT_POSITION, 13):
+                recovery_script(i)
+        elif args.first:
+            recovery_script(0)
+        elif args.last:
+            recovery_script(11)
     elif args.short:
-        short_rec(CURRENT_POSITION)
+        if args.all:
+            for i in range(CURRENT_POSITION, 13):
+                recovery_short(i)
+        elif args.first:
+            recovery_short(0)
+        elif args.last:
+            recovery_short(11)
     else:
-        print('Please specify a valid flag: --all, --first, --last or --short')
+        print('Please specify a valid flag: --deep or --short and --all, --first or --last ')
