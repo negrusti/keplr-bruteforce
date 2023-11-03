@@ -1,5 +1,14 @@
-WALLET_NAME:
-PASSWORD:
-MY_WORDS:
-KEPLR:
-CURRENT_POSITION:
+# <string>
+WALLET_NAME: 'username'
+
+# <string>
+PASSWORD: 'password'
+
+# <list> 11 words
+MY_WORDS: ['example', ... ,'example']
+
+# <string> path
+KEPLR: 'root:\*.crx'
+
+# <int> 0-11, default=0
+CURRENT_POSITION: 0
