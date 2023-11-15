@@ -41,7 +41,6 @@ select_all_checkbox_x = '//*[@id="app"]/div/div[2]/div/div/div/div/div/div[7]'
 chop = webdriver.ChromeOptions()
 chop.add_experimental_option("detach", True)
 chop.add_argument("--disable-usb-devices")
-# chop.add_argument("--kiosk")
 chop.add_extension(KEPLR)
 driver = webdriver.Chrome(options=chop)
 driver.implicitly_wait(10)
@@ -59,6 +58,7 @@ def recovery_script(input_position):
     input_elements = input_elements_block.find_elements(By.TAG_NAME, 'input')
     modify = MY_WORDS.copy()
     modify.insert(input_position, '')
+    count = 0
 
     input_word_pairs = zip(input_elements, modify)
     for ele, w in input_word_pairs:
@@ -98,6 +98,7 @@ def recovery_script(input_position):
                 results_usd = driver.find_element(By.XPATH, all_coins_block_x).text.split()
                 non_zero_values = any(item.replace('.', '', 1).isdigit() and float(item) != 0 for item in results_usd)
                 if non_zero_values:
+                    count += 1
                     modify[input_position] = word
                     print(*modify)
                     print(results_usd)
@@ -121,7 +122,20 @@ def recovery_script(input_position):
                     ele.send_keys(Keys.DELETE)
                     ele.send_keys(w)
         except NoSuchElementException as e:
+            with open('results.txt', 'a') as file:
+                file.write(f'[ERROR] Stop on Word: {word}')
+                file.write(50 * '-' + '\n')
             print(f'[ERROR] Stop on Word: {word}', e)
+    if count == 0:
+        with open('results.txt', 'a') as file:
+            file.write('No results found for any combination.\n')
+            file.write(50 * '-' + '\n')
+        print('No results found for any combination.')
+    else:
+        with open('results.txt', 'a') as file:
+            file.write(f'Found {count} combination in Deep mode.\n')
+            file.write(50 * '-' + '\n')
+        print(f'Found {count} combination in Deep mode.')
     return None
 
 
@@ -132,6 +146,7 @@ def recovery_short(input_position):
     input_elements = input_elements_block.find_elements(By.TAG_NAME, 'input')
     modify = MY_WORDS.copy()
     modify.insert(input_position, '')
+    count = 0
 
     input_word_pairs = zip(input_elements, modify)
     for ele, w in input_word_pairs:
@@ -151,6 +166,8 @@ def recovery_short(input_position):
                 Alert(driver).accept()
                 continue
             except NoAlertPresentException:
+                count += 1
+                file.write(f'Words: {modify}\n')
                 modify[input_position] = word
                 with open('results_short.txt', 'a') as file:
                     file.write(f'Words: {modify}\n')
@@ -163,7 +180,20 @@ def recovery_short(input_position):
                     print('[WARNING] Back Button failed by click()')
                     driver.execute_script("arguments[0].click();", element)
         except NoSuchElementException as e:
+            with open('results_short.txt', 'a') as file:
+                file.write(f'[ERROR] Stop on Word: {word}')
+                file.write(50 * '-' + '\n')
             print(f'[ERROR] Stop on Word: {word}', e)
+    if count == 0:
+        with open('results_short.txt', 'a') as file:
+            file.write('No results found for any combination.\n')
+            file.write(50 * '-' + '\n')
+        print('No results found for any combination.')
+    else:
+        with open('results_short.txt', 'a') as file:
+            file.write(f'Found {count} combination in Short mode.\n')
+            file.write(50 * '-' + '\n')
+        print(f'Found {count} combination in Short mode.')
     return None
 
 
