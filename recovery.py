@@ -51,6 +51,13 @@ driver.switch_to.window(driver.window_handles[0])
 driver.get('chrome-extension://dmkamcknogkgcdfhhbddcghachkejeap/register.html#')
 
 
+def fill_input_elements(elements, values):
+    for ele, value in zip(elements, values):
+        ele.send_keys(Keys.CONTROL, 'a')
+        ele.send_keys(Keys.DELETE)
+        ele.send_keys(value)
+
+
 def recovery_script(input_position):
     driver.find_element(By.XPATH, existing_wallet_button_x).click()
     driver.find_element(By.XPATH, recovery_phrase_button_x).click()
@@ -60,11 +67,7 @@ def recovery_script(input_position):
     modify.insert(input_position, '')
     count = 0
 
-    input_word_pairs = zip(input_elements, modify)
-    for ele, w in input_word_pairs:
-        ele.send_keys(Keys.CONTROL, 'a')
-        ele.send_keys(Keys.DELETE)
-        ele.send_keys(w)
+    fill_input_elements(input_elements, modify)
 
     for word in words:
         try:
@@ -116,11 +119,8 @@ def recovery_script(input_position):
                 input_elements_block = driver.find_element(By.XPATH, input_block_x)
                 input_elements = input_elements_block.find_elements(By.TAG_NAME, 'input')
 
-                input_word_pairs = zip(input_elements, modify)
-                for ele, w in input_word_pairs:
-                    ele.send_keys(Keys.CONTROL, 'a')
-                    ele.send_keys(Keys.DELETE)
-                    ele.send_keys(w)
+                fill_input_elements(input_elements, modify)
+
         except NoSuchElementException as e:
             with open('results.txt', 'a') as file:
                 file.write(f'[ERROR] Stop on Word: {word}')
@@ -148,14 +148,13 @@ def recovery_short(input_position):
     modify.insert(input_position, '')
     count = 0
 
-    input_word_pairs = zip(input_elements, modify)
-    for ele, w in input_word_pairs:
-        ele.send_keys(Keys.CONTROL, 'a')
-        ele.send_keys(Keys.DELETE)
-        ele.send_keys(w)
+    fill_input_elements(input_elements, modify)
 
     for word in words:
         try:
+            element = input_elements[input_position]
+            driver.execute_script("arguments[0].value = arguments[1];", element, word)
+
             input_elements[input_position].send_keys(Keys.CONTROL, 'a')
             input_elements[input_position].send_keys(Keys.DELETE)
             input_elements[input_position].send_keys(word)
@@ -167,7 +166,6 @@ def recovery_short(input_position):
                 continue
             except NoAlertPresentException:
                 count += 1
-                file.write(f'Words: {modify}\n')
                 modify[input_position] = word
                 with open('results_short.txt', 'a') as file:
                     file.write(f'Words: {modify}\n')
