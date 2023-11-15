@@ -209,25 +209,21 @@ if __name__ == '__main__':
     parser.add_argument('--short', action='store_true', help='Run short recovery')
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--all', action='store_true', help='Run for ALL inputs')
     group.add_argument('--first', action='store_true', help='Run only First input')
     group.add_argument('--last', action='store_true', help='Run only Last input')
 
     args = parser.parse_args()
 
     if args.short:
-        if args.all:
-            for i in range(13):
-                recovery_short(i)
-        elif args.first:
+        if args.first:
             recovery_short(0)
         elif args.last:
             recovery_short(11)
-    else:
-        if args.all:
+        else:
             for i in range(CURRENT_POSITION, 13):
-                recovery_script(i)
-        elif args.first:
+                recovery_short(i)
+    else:
+        if args.first:
             recovery_script(0)
         elif args.last:
             recovery_script(11)
