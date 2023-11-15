@@ -168,10 +168,44 @@ def recovery_short(input_position):
     return None
 
 
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser(description='Recovery Script')
+#
+#     parser.add_argument('--deep', action='store_true', help='Run deep recovery')
+#     parser.add_argument('--short', action='store_true', help='Run short recovery')
+#
+#     group = parser.add_mutually_exclusive_group()
+#     group.add_argument('--all', action='store_true', help='Run for ALL inputs')
+#     group.add_argument('--first', action='store_true', help='Run only First input')
+#     group.add_argument('--last', action='store_true', help='Run only Last input')
+#
+#     parser.set_defaults(deep=True, all=True)
+#
+#     args = parser.parse_args()
+#
+#     if args.deep:
+#         if args.all:
+#             for i in range(CURRENT_POSITION, 13):
+#                 recovery_script(i)
+#         elif args.first:
+#             recovery_script(0)
+#         elif args.last:
+#             recovery_script(11)
+#     elif args.short:
+#         if args.all:
+#             for i in range(CURRENT_POSITION, 13):
+#                 recovery_short(i)
+#         elif args.first:
+#             recovery_short(0)
+#         elif args.last:
+#             recovery_short(11)
+#     else:
+#         print('Please specify a valid flag: --short or --all, --first or --last')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Recovery Script')
 
-    parser.add_argument('--deep', action='store_true', help='Run deep recovery')
     parser.add_argument('--short', action='store_true', help='Run short recovery')
 
     group = parser.add_mutually_exclusive_group()
@@ -179,11 +213,17 @@ if __name__ == '__main__':
     group.add_argument('--first', action='store_true', help='Run only First input')
     group.add_argument('--last', action='store_true', help='Run only Last input')
 
-    parser.set_defaults(deep=True, all=True)
-
     args = parser.parse_args()
 
-    if args.deep:
+    if args.short:
+        if args.all:
+            for i in range(13):
+                recovery_short(i)
+        elif args.first:
+            recovery_short(0)
+        elif args.last:
+            recovery_short(11)
+    else:
         if args.all:
             for i in range(CURRENT_POSITION, 13):
                 recovery_script(i)
@@ -191,13 +231,6 @@ if __name__ == '__main__':
             recovery_script(0)
         elif args.last:
             recovery_script(11)
-    elif args.short:
-        if args.all:
+        elif not any(vars(args).values()):
             for i in range(CURRENT_POSITION, 13):
-                recovery_short(i)
-        elif args.first:
-            recovery_short(0)
-        elif args.last:
-            recovery_short(11)
-    else:
-        print('Please specify a valid flag: --short or --all, --first or --last')
+                recovery_script(i)
