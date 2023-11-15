@@ -75,6 +75,12 @@ def recovery_script(input_position):
             input_elements[input_position].send_keys(Keys.DELETE)
             input_elements[input_position].send_keys(word)
 
+            if any(not ele.get_attribute('value') for ele in input_elements):
+                fill_input_elements(input_elements, modify)
+                input_elements[input_position].send_keys(Keys.CONTROL, 'a')
+                input_elements[input_position].send_keys(Keys.DELETE)
+                input_elements[input_position].send_keys(word)
+
             driver.find_element(By.XPATH, import_button_x).click()
 
             try:
@@ -152,12 +158,15 @@ def recovery_short(input_position):
 
     for word in words:
         try:
-            element = input_elements[input_position]
-            driver.execute_script("arguments[0].value = arguments[1];", element, word)
-
             input_elements[input_position].send_keys(Keys.CONTROL, 'a')
             input_elements[input_position].send_keys(Keys.DELETE)
             input_elements[input_position].send_keys(word)
+
+            if any(not ele.get_attribute('value') for ele in input_elements):
+                fill_input_elements(input_elements, modify)
+                input_elements[input_position].send_keys(Keys.CONTROL, 'a')
+                input_elements[input_position].send_keys(Keys.DELETE)
+                input_elements[input_position].send_keys(word)
 
             driver.find_element(By.XPATH, import_button_x).click()
 
