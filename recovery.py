@@ -19,12 +19,12 @@ with open('settings.yaml', 'r') as yaml_file:
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
-extension_id = "dmkamcknogkgcdfhhbddcghachkejeap"
+chrome_extension_id = "dmkamcknogkgcdfhhbddcghachkejeap"
 
 WALLET_NAME = settings.get('WALLET_NAME', '')
 PASSWORD = settings.get('PASSWORD', '')
 MY_WORDS = settings.get('MY_WORDS', [])
-KEPLR_CRX_PATH = os.path.join(script_dir, f"{extension_id}.crx")
+KEPLR_CRX_PATH = os.path.join(script_dir, f"{chrome_extension_id}.crx")
 CURRENT_POSITION = settings.get('CURRENT_POSITION', 0)
 
 # ELEMENTS (XPATH)
@@ -48,13 +48,13 @@ chop.add_extension(KEPLR_CRX_PATH)
 driver = webdriver.Chrome(options=chop)
 driver.implicitly_wait(10)
 
+# Handling Selenium quirks with extensions
 driver.get("https://example.com")
 driver.close()
 driver.switch_to.window(driver.window_handles[0])
-driver.get(f'chrome-extension://{extension_id}/register.html#')
+driver.get(f'chrome-extension://{chrome_extension_id}/register.html#')
 
 mnemo = Mnemonic("english")
-
 
 def bruteforce_at_position(input_position):
     count = 0
