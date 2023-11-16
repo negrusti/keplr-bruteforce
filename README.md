@@ -1,6 +1,6 @@
 ## What is this thing
 
-A Python script driving a Keplr Chrome extension via Selenium. If you are missing a single recovery word from your 12 words phrase, you can brute-force it using this tool. The script will find all valid recovery phrases and then will recover the wallet given the name and password from the config file - they can be anything you like. It will then enter the wallet and check for non-zero currency values.
+A Python script driving a Keplr Chrome extension via Selenium. If you are missing a single recovery word from your 12 words phrase, you can brute-force it using this tool. The script will find all valid recovery phrases and then "recover" the wallets given the name and password from the config file - they can be anything you like. It will then enter each wallet and check for non-zero currency values.
 
 ## Prerequisites:
 
