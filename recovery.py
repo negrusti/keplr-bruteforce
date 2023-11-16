@@ -24,10 +24,9 @@ CURRENT_POSITION = settings.get('CURRENT_POSITION', 0)
 
 # ELEMENTS (XPATH)
 existing_wallet_button_x = "//button[.//div[text()='Import an existing wallet']]"
-recovery_phrase_button_x = '//*[@id="app"]/div/div[2]/div/div/div[2]/div/div/div/div[1]/div/div[5]'
-input_block_x = '//*[@id="app"]/div/div[2]/div/div/div[3]/div/div'
-import_button_x = '//*[@id="app"]/div/div[2]/div/div/div[3]/div/div/form/div[6]'
-back_button_x = '//*[@id="app"]/div/div[1]/div[1]'
+recovery_phrase_button_x = "//button[.//div[text()='Use recovery phrase or private key']]"
+input_word_x = "//input[@type='password']"
+import_button_x = "//button[@type='submit']"
 input_user_data_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div'
 input_wallet_name_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div/form/div/div[1]/div[2]/div/div/input'
 input_wallet_name_solo_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div/form/div/div[3]/div[2]/div/div/input'
@@ -75,8 +74,7 @@ def bruteforce_at_position(input_position):
         driver.refresh()
         driver.find_element(By.XPATH, existing_wallet_button_x).click()
         driver.find_element(By.XPATH, recovery_phrase_button_x).click()
-        input_elements_block = driver.find_element(By.XPATH, input_block_x)
-        input_elements = input_elements_block.find_elements(By.TAG_NAME, 'input')
+        input_elements = driver.find_elements(By.XPATH, input_word_x)
 
         fill_input_elements(input_elements, all_words)
 
