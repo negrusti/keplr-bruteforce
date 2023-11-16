@@ -84,13 +84,9 @@ def bruteforce_at_position(input_position):
                 ele.send_keys(PASSWORD)
 
             driver.find_element(By.XPATH, next_button_x).click()
-            wait = WebDriverWait(driver, 10)
-            element = wait.until(expected_conditions.element_to_be_clickable((By.XPATH, select_all_checkbox_x)))
-            try:
-                element.click()
-            except ElementClickInterceptedException:
-                print('[WARNING] Select all checkbox failed by click()')
-                driver.execute_script("arguments[0].click();", element)
+            currencies = driver.find_elements(By.XPATH, "//div[@color='#FEFEFE']")
+            for cur in currencies:
+                print(cur.text)
             results_usd = driver.find_element(By.XPATH, all_coins_block_x).text.split()
             non_zero_values = any(item.replace('.', '', 1).isdigit() and float(item) != 0 for item in results_usd)
             if non_zero_values:
