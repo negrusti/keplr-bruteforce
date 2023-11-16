@@ -8,7 +8,7 @@ PASSWORD: 'password'
 MY_WORDS: ['example', ... ,'example']
 
 # <string> path
-KEPLR: 'root:\*.crx'
+KEPLR: 'C:\Users\User\Downloads\dmkamcknogkgcdfhhbddcghachkejeap.crx'
 
-# <int> 0-11, default=0
-CURRENT_POSITION: 0
+# <int> 1-12, default=1
+CURRENT_POSITION: 1

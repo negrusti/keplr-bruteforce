@@ -3,7 +3,5 @@ __pycache__
 
 *.crx
 
-vars.py
 settings.yaml
-results_short.txt
 results.txt

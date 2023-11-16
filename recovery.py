@@ -1,14 +1,14 @@
+import yaml
+import argparse
+
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
-import argparse
 from selenium.common import NoSuchElementException, TimeoutException, NoAlertPresentException, \
     ElementClickInterceptedException
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.alert import Alert
 from mnemonic import Mnemonic
-import yaml
 
 with open('allWords.txt', 'r') as words_file:
     words = words_file.read().splitlines()
@@ -53,6 +53,7 @@ driver.get('chrome-extension://dmkamcknogkgcdfhhbddcghachkejeap/register.html#')
 
 mnemo = Mnemonic("english")
 
+
 def fill_input_elements(elements, values):
     for ele, value in zip(elements, values):
         ele.send_keys(Keys.CONTROL, 'a')
@@ -61,35 +62,25 @@ def fill_input_elements(elements, values):
 
 
 def bruteforce_at_position(input_position):
-    driver.find_element(By.XPATH, existing_wallet_button_x).click()
-    driver.find_element(By.XPATH, recovery_phrase_button_x).click()
-    input_elements_block = driver.find_element(By.XPATH, input_block_x)
-    input_elements = input_elements_block.find_elements(By.TAG_NAME, 'input')
-    modify = MY_WORDS.copy()
-    modify.insert(input_position, '')
     count = 0
-
-    fill_input_elements(input_elements, modify)
 
     for word in words:
         all_words = MY_WORDS.copy()
         all_words.insert(input_position, word)
         merged_words = ' '.join(all_words)
-        print(merged_words + "\n")
         if not mnemo.check(merged_words):
             continue
+        print(merged_words + "\n")
+
+        driver.refresh()
+        driver.find_element(By.XPATH, existing_wallet_button_x).click()
+        driver.find_element(By.XPATH, recovery_phrase_button_x).click()
+        input_elements_block = driver.find_element(By.XPATH, input_block_x)
+        input_elements = input_elements_block.find_elements(By.TAG_NAME, 'input')
+
+        fill_input_elements(input_elements, all_words)
 
         try:
-            input_elements[input_position].send_keys(Keys.CONTROL, 'a')
-            input_elements[input_position].send_keys(Keys.DELETE)
-            input_elements[input_position].send_keys(word)
-
-            if any(not ele.get_attribute('value') for ele in input_elements):
-                fill_input_elements(input_elements, modify)
-                input_elements[input_position].send_keys(Keys.CONTROL, 'a')
-                input_elements[input_position].send_keys(Keys.DELETE)
-                input_elements[input_position].send_keys(word)
-
             driver.find_element(By.XPATH, import_button_x).click()
 
             user_data = driver.find_element(By.XPATH, input_user_data_x)
@@ -108,46 +99,27 @@ def bruteforce_at_position(input_position):
             except ElementClickInterceptedException:
                 print('[WARNING] Select all checkbox failed by click()')
                 driver.execute_script("arguments[0].click();", element)
-            # driver.find_element(By.XPATH, select_all_checkbox_x).click()
             results_usd = driver.find_element(By.XPATH, all_coins_block_x).text.split()
             non_zero_values = any(item.replace('.', '', 1).isdigit() and float(item) != 0 for item in results_usd)
             if non_zero_values:
                 count += 1
-                modify[input_position] = word
-                print(*modify)
                 print(results_usd)
                 with open('results.txt', 'a') as file:
-                    file.write(f'Words: {modify}\n')
+                    file.write(f'Words: {merged_words}\n')
                     file.write(f'Coins: {results_usd}\n')
-                    file.write(50 * '-' + '\n')
                 print('Results written to file', '\n')
-            driver.execute_script("window.open('about:blank', 'new_window')")
-            driver.switch_to.window(driver.window_handles[1])
-            driver.get('chrome-extension://dmkamcknogkgcdfhhbddcghachkejeap/register.html#')
-
-            driver.find_element(By.XPATH, existing_wallet_button_x).click()
-            driver.find_element(By.XPATH, recovery_phrase_button_x).click()
-            input_elements_block = driver.find_element(By.XPATH, input_block_x)
-            input_elements = input_elements_block.find_elements(By.TAG_NAME, 'input')
-
-            fill_input_elements(input_elements, modify)
 
         except NoSuchElementException as e:
             with open('results.txt', 'a') as file:
                 file.write(f'[ERROR] Stop on Word: {word}')
-                file.write(50 * '-' + '\n')
             print(f'[ERROR] Stop on Word: {word}', e)
+
     if count == 0:
         with open('results.txt', 'a') as file:
-            file.write('No results found for any combination.\n')
-            file.write(50 * '-' + '\n')
-        print('No results found for any combination.')
-    else:
-        with open('results.txt', 'a') as file:
-            file.write(f'Found {count} combinations\n')
-            file.write(50 * '-' + '\n')
-        print(f'Found {count} combinations')
+            file.write(f'No results found for any combination at {input_position} position.\n')
+        print(f'No results found for any combination at {input_position} position.')
     return None
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Recovery Script')
@@ -158,11 +130,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-
     if args.first:
         bruteforce_at_position(0)
     elif args.last:
         bruteforce_at_position(11)
-    elif not any(vars(args).values()):
-        for i in range(CURRENT_POSITION, 13):
+    else:
+        for i in range(CURRENT_POSITION-1, 12):
             bruteforce_at_position(i)
