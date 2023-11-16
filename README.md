@@ -6,13 +6,14 @@ A Python script driving the Keplr Chrome extension via Selenium. If you are miss
 
 Install Python
 
-Download Keplr extension CRX file (you can use any other methods):
+Optional: Download and verify the Keplr extension CRX file yourself (you can use any other methods):
 1. Verify in Chrome web store the correct Keplr extension ID:
 https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap
 2. Switch to https://robwu.nl/crxviewer/ and insert full URL:
     https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap
 3. Click "Open in this viewer" button -> "Download" (top right corner) for download CRX file
 4. Copy the downloaded CRX file into the project directory
+If you omit the download step then the script will try to download the extension automatically.
 
 In the terminal execute "pip install -r requirements.txt" in the project directory
 

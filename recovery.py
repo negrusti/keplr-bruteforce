@@ -2,6 +2,7 @@ import yaml
 import argparse
 import pyperclip
 import os
+import requests
 
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -40,6 +41,27 @@ select_all_checkbox_x = "//div[text()='Select All']/following::input[@type='chec
 setup_your_wallet_form_x = "//input[contains(@placeholder, 'NFT Vault')]/ancestor::form[1]"
 currency_x = "//div[@color='#FEFEFE' and not(contains(text(), 'chain(s) selected'))]"
 
+def download_url(url, filename):
+    try:
+        # Send a GET request to the URL
+        response = requests.get(url, allow_redirects=True)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Write the content of the response to a file
+            with open(filename, 'wb') as file:
+                file.write(response.content)
+            print(f"File downloaded successfully: {filename}")
+        else:
+            print(f"Failed to download. Status code: {response.status_code}")
+    except requests.RequestException as e:
+        print(f"Error occurred: {e}")
+
+if not os.path.exists(KEPLR_CRX_PATH):
+    print("Downloading Keplr extension CRX from Google...")
+    download_url(f"https://clients2.google.com/service/update2/crx?response=redirect&prodversion=119.0.6045.124&acceptformat=crx2,crx3&x=id%3D{chrome_extension_id}%26uc",
+        KEPLR_CRX_PATH)
+
 # SCRIPT
 chop = webdriver.ChromeOptions()
 chop.add_experimental_option("detach", True)
@@ -47,6 +69,7 @@ chop.add_argument("--disable-usb-devices")
 chop.add_extension(KEPLR_CRX_PATH)
 driver = webdriver.Chrome(options=chop)
 driver.implicitly_wait(10)
+
 
 # Handling Selenium quirks with extensions
 driver.get("https://example.com")
