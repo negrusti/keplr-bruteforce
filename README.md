@@ -7,6 +7,10 @@ A Python script driving the Keplr Chrome extension via Selenium. If you are miss
 
 Do not attempt to run this in the background while doing something else on the same workstation as it will most likely fail due to the timing issues. Reliable internet connection is required, bandwidth is not particularly important.
 
+## Warnings
+
+Note that your words are being copied into the clipboard as it is the fastest way to insert them into the extension. Make sure that no untrusted applications can access the clipboard.
+
 ## Prerequisites
 
 Install Python
