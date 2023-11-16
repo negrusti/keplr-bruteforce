@@ -19,8 +19,8 @@ with open('settings.yaml', 'r') as yaml_file:
     settings = yaml.load(yaml_file, Loader=yaml.FullLoader)
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
-
 chrome_extension_id = "dmkamcknogkgcdfhhbddcghachkejeap"
+max_retries = 5
 
 WALLET_NAME = settings.get('WALLET_NAME', '')
 PASSWORD = settings.get('PASSWORD', '')
@@ -83,52 +83,61 @@ def bruteforce_at_position(input_position):
     count = 0
 
     for word in words:
+        
+        retry_count = 0
         all_words = MY_WORDS.copy()
         all_words.insert(input_position, word)
         merged_words = ' '.join(all_words)
         if not mnemo.check(merged_words):
             continue
-        print(merged_words + "\n")
+        
+        while retry_count < max_retries:
+            
+            driver.refresh()
+            print(f"Checking wallet for: {merged_words}")
 
-        driver.refresh()
-        driver.find_element(By.XPATH, existing_wallet_button_x).click()
-        driver.find_element(By.XPATH, recovery_phrase_button_x).click()
-        input_elements = driver.find_elements(By.XPATH, input_word_x)
+            try:
+                driver.find_element(By.XPATH, existing_wallet_button_x).click()
+                driver.find_element(By.XPATH, recovery_phrase_button_x).click()
+                input_elements = driver.find_elements(By.XPATH, input_word_x)
 
-        pyperclip.copy(merged_words)
-        input_elements[0].send_keys(Keys.CONTROL, 'v')
+                pyperclip.copy(merged_words)
+                input_elements[0].send_keys(Keys.CONTROL, 'v')
 
-        try:
-            driver.find_element(By.XPATH, import_button_x).click()
+                driver.find_element(By.XPATH, import_button_x).click()
 
-            setup_your_wallet_form = driver.find_element(By.XPATH, setup_your_wallet_form_x)
+                setup_your_wallet_form = driver.find_element(By.XPATH, setup_your_wallet_form_x)
 
-            driver.find_element(By.XPATH, input_wallet_name_x).send_keys(WALLET_NAME)
+                driver.find_element(By.XPATH, input_wallet_name_x).send_keys(WALLET_NAME)
 
-            if len(setup_your_wallet_form.find_elements(By.TAG_NAME, "input")) > 1:
-                password_fields = driver.find_elements(By.XPATH, input_password_x)
-                for ele in password_fields:
-                    ele.send_keys(PASSWORD)
+                if len(setup_your_wallet_form.find_elements(By.TAG_NAME, "input")) > 1:
+                    password_fields = driver.find_elements(By.XPATH, input_password_x)
+                    for ele in password_fields:
+                        ele.send_keys(PASSWORD)
 
-            driver.find_element(By.XPATH, next_button_x).click()
+                driver.find_element(By.XPATH, next_button_x).click()
 
-            WebDriverWait(driver, 10).until(
-                expected_conditions.element_to_be_clickable((By.XPATH, select_all_checkbox_x)))
+                WebDriverWait(driver, 10).until(
+                    expected_conditions.element_to_be_clickable((By.XPATH, select_all_checkbox_x)))
 
-            currencies = driver.find_elements(By.XPATH, currency_x)
-            results_cur = ', '.join(cur.text for cur in currencies if float(cur.text.split()[0]) > 0)
+                currencies = driver.find_elements(By.XPATH, currency_x)
+                results_cur = ', '.join(cur.text for cur in currencies if float(cur.text.split()[0]) > 0)
 
-            if results_cur:
-                count += 1
+                if results_cur:
+                    count += 1
+                    with open('results.txt', 'a') as file:
+                        file.write(f'Words: {merged_words}\n')
+                        file.write(f'Coins: {results_cur}\n')
+                    print('Results written to file', '\n')
+                
+                break
+
+            except (NoSuchElementException, IndexError) as e:
+                retry_count += 1
                 with open('results.txt', 'a') as file:
-                    file.write(f'Words: {merged_words}\n')
-                    file.write(f'Coins: {results_cur}\n')
-                print('Results written to file', '\n')
+                    file.write(f'[ERROR] Word: {word} in position {input_position}, attempt {retry_count}\n')
+                print(f'[ERROR] Word: {word} in position {input_position}, attempt {retry_count}', e)
 
-        except NoSuchElementException as e:
-            with open('results.txt', 'a') as file:
-                file.write(f'[ERROR] Stop on Word: {word}')
-            print(f'[ERROR] Stop on Word: {word}', e)
 
     if count == 0:
         with open('results.txt', 'a') as file:
