@@ -1,6 +1,7 @@
 import yaml
 import argparse
 import pyperclip
+import os
 
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -16,10 +17,14 @@ with open('allWords.txt', 'r') as words_file:
 with open('settings.yaml', 'r') as yaml_file:
     settings = yaml.load(yaml_file, Loader=yaml.FullLoader)
 
+script_dir = os.path.dirname(os.path.realpath(__file__))
+
+extension_id = "dmkamcknogkgcdfhhbddcghachkejeap"
+
 WALLET_NAME = settings.get('WALLET_NAME', '')
 PASSWORD = settings.get('PASSWORD', '')
 MY_WORDS = settings.get('MY_WORDS', [])
-KEPLR_CRX_PATH = settings.get('KEPLR', '')
+KEPLR_CRX_PATH = os.path.join(script_dir, f"{extension_id}.crx")
 CURRENT_POSITION = settings.get('CURRENT_POSITION', 0)
 
 # ELEMENTS (XPATH)
@@ -46,7 +51,7 @@ driver.implicitly_wait(10)
 driver.get("https://example.com")
 driver.close()
 driver.switch_to.window(driver.window_handles[0])
-driver.get('chrome-extension://dmkamcknogkgcdfhhbddcghachkejeap/register.html#')
+driver.get(f'chrome-extension://{extension_id}/register.html#')
 
 mnemo = Mnemonic("english")
 

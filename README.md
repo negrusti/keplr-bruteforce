@@ -11,6 +11,7 @@ Download CRX file for Keplr:
 2. Switch to https://robwu.nl/crxviewer/ and insert full URL:
     https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap
 3. Click "Open in this viewer" button -> "Download" (top right corner) for download CRX file
+4. Copy the downloaded CRX file into the project directory
 
 In the terminal execute "pip install -r requirements.txt" in the project directory
 
@@ -19,7 +20,7 @@ In the terminal execute "pip install -r requirements.txt" in the project directo
 Copy settings.yaml.template file to settings.yaml
 
 In settings.yaml file you need to set up some variables.
-Set up Wallet name, Password, path to CRX file and 11(!) existing words
+Configure wallet name, password and 11 existing words
 
 ## Usage
 
