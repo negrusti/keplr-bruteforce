@@ -34,6 +34,8 @@ input_password_x = "//input[contains(@placeholder, 'characters in length')]"
 next_button_x = "//button[.//div[text()='Next']]"
 all_coins_block_x = "//div[starts-with(@class, 'simplebar')]"
 select_all_checkbox_x = "//div[text()='Select All']/following::input[@type='checkbox'][1]"
+setup_your_wallet_form_x = "//input[contains(@placeholder, 'NFT Vault')]/ancestor::form[1]"
+currency_x = "//div[@color='#FEFEFE']"
 
 # SCRIPT
 chop = webdriver.ChromeOptions()
@@ -49,6 +51,7 @@ driver.switch_to.window(driver.window_handles[0])
 driver.get('chrome-extension://dmkamcknogkgcdfhhbddcghachkejeap/register.html#')
 
 mnemo = Mnemonic("english")
+
 
 def bruteforce_at_position(input_position):
     count = 0
@@ -72,20 +75,24 @@ def bruteforce_at_position(input_position):
         try:
             driver.find_element(By.XPATH, import_button_x).click()
 
+            setup_your_wallet_form = driver.find_element(By.XPATH, setup_your_wallet_form_x)
+
             driver.find_element(By.XPATH, input_wallet_name_x).send_keys(WALLET_NAME)
-            #if len(driver.find_elements(By.TAG_NAME, "input")) > 1:
-            driver.implicitly_wait(0.2)
-            password_fields = driver.find_elements(By.XPATH, input_password_x)
-            for ele in password_fields:
-                ele.send_keys(PASSWORD)
-            driver.implicitly_wait(10)
+
+            if len(setup_your_wallet_form.find_elements(By.TAG_NAME, "input")) > 1:
+                password_fields = driver.find_elements(By.XPATH, input_password_x)
+                for ele in password_fields:
+                    ele.send_keys(PASSWORD)
 
             driver.find_element(By.XPATH, next_button_x).click()
-            currencies = driver.find_elements(By.XPATH, "//div[@color='#FEFEFE']")
-            #for cur in currencies:
-            #    print(cur.text)
+
+            currencies = driver.find_elements(By.XPATH, currency_x)
+            for cur in currencies:
+                print(cur.text)
+
             results_usd = driver.find_element(By.XPATH, all_coins_block_x).text.split()
             non_zero_values = any(item.replace('.', '', 1).isdigit() and float(item) != 0 for item in results_usd)
+
             if non_zero_values:
                 count += 1
                 print(results_usd)
@@ -120,5 +127,5 @@ if __name__ == '__main__':
     elif args.last:
         bruteforce_at_position(11)
     else:
-        for i in range(CURRENT_POSITION-1, 12):
+        for i in range(CURRENT_POSITION - 1, 12):
             bruteforce_at_position(i)
