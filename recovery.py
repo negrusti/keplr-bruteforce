@@ -23,7 +23,7 @@ KEPLR_CRX_PATH = settings.get('KEPLR', '')
 CURRENT_POSITION = settings.get('CURRENT_POSITION', 0)
 
 # ELEMENTS (XPATH)
-existing_wallet_button_x = '//*[@id="app"]/div/div[2]/div/div/div/div/div/div[3]/div[3]/button'
+existing_wallet_button_x = "//button[.//div[text()='Import an existing wallet']]"
 recovery_phrase_button_x = '//*[@id="app"]/div/div[2]/div/div/div[2]/div/div/div/div[1]/div/div[5]'
 input_block_x = '//*[@id="app"]/div/div[2]/div/div/div[3]/div/div'
 import_button_x = '//*[@id="app"]/div/div[2]/div/div/div[3]/div/div/form/div[6]'
