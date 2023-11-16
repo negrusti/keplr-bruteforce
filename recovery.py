@@ -1,5 +1,6 @@
 import yaml
 import argparse
+import time
 
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -9,6 +10,7 @@ from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from mnemonic import Mnemonic
+import pyperclip
 
 with open('allWords.txt', 'r') as words_file:
     words = words_file.read().splitlines()
@@ -48,14 +50,6 @@ driver.get('chrome-extension://dmkamcknogkgcdfhhbddcghachkejeap/register.html#')
 
 mnemo = Mnemonic("english")
 
-
-def fill_input_elements(elements, values):
-    for ele, value in zip(elements, values):
-        ele.send_keys(Keys.CONTROL, 'a')
-        ele.send_keys(Keys.DELETE)
-        ele.send_keys(value)
-
-
 def bruteforce_at_position(input_position):
     count = 0
 
@@ -72,21 +66,24 @@ def bruteforce_at_position(input_position):
         driver.find_element(By.XPATH, recovery_phrase_button_x).click()
         input_elements = driver.find_elements(By.XPATH, input_word_x)
 
-        fill_input_elements(input_elements, all_words)
+        pyperclip.copy(merged_words)
+        input_elements[0].send_keys(Keys.CONTROL, 'v')
 
         try:
             driver.find_element(By.XPATH, import_button_x).click()
 
             driver.find_element(By.XPATH, input_wallet_name_x).send_keys(WALLET_NAME)
-            driver.find_element(By.XPATH, next_button_x).click()
+            #if len(driver.find_elements(By.TAG_NAME, "input")) > 1:
+            driver.implicitly_wait(0.2)
             password_fields = driver.find_elements(By.XPATH, input_password_x)
             for ele in password_fields:
                 ele.send_keys(PASSWORD)
+            driver.implicitly_wait(10)
 
             driver.find_element(By.XPATH, next_button_x).click()
             currencies = driver.find_elements(By.XPATH, "//div[@color='#FEFEFE']")
-            for cur in currencies:
-                print(cur.text)
+            #for cur in currencies:
+            #    print(cur.text)
             results_usd = driver.find_element(By.XPATH, all_coins_block_x).text.split()
             non_zero_values = any(item.replace('.', '', 1).isdigit() and float(item) != 0 for item in results_usd)
             if non_zero_values:
