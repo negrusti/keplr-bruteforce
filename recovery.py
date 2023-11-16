@@ -135,14 +135,14 @@ def bruteforce_at_position(input_position):
             except (NoSuchElementException, IndexError) as e:
                 retry_count += 1
                 with open('results.txt', 'a') as file:
-                    file.write(f'[ERROR] Word: {word} in position {input_position}, attempt {retry_count}\n')
-                print(f'[ERROR] Word: {word} in position {input_position}, attempt {retry_count}', e)
+                    file.write(f'[ERROR] Word: {word} in position {input_position + 1}, attempt {retry_count}\n')
+                print(f'[ERROR] Word: {word} in position {input_position + 1}, attempt {retry_count}', e)
 
 
     if count == 0:
         with open('results.txt', 'a') as file:
-            file.write(f'No results found for any combination at {input_position} position.\n')
-        print(f'No results found for any combination at {input_position} position.')
+            file.write(f'No results found for any combination at {input_position + 1} position.\n')
+        print(f'No results found for any combination at {input_position + 1} position.')
     return None
 
 
