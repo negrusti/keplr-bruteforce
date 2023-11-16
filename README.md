@@ -31,9 +31,9 @@ Available flags:
 
 ## Output
 
-All results from script with entering wallet write to "results.txt".
+All results are written to results.txt file in the project directory.
 
 ## Additional settings
 
 You can restart the process from a certain position by changing CURRENT_POSITION in your settings.yaml
-Available numbers from 1 to 12
+Valid values from 1 to 12
