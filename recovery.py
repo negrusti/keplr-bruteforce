@@ -12,7 +12,7 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from mnemonic import Mnemonic
 
-with open('allWords.txt', 'r') as words_file:
+with open('bip39words-en.txt', 'r') as words_file:
     words = words_file.read().splitlines()
 
 with open('settings.yaml', 'r') as yaml_file:
