@@ -27,15 +27,11 @@ existing_wallet_button_x = "//button[.//div[text()='Import an existing wallet']]
 recovery_phrase_button_x = "//button[.//div[text()='Use recovery phrase or private key']]"
 input_word_x = "//input[@type='password']"
 import_button_x = "//button[@type='submit']"
-input_user_data_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div'
-input_wallet_name_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div/form/div/div[1]/div[2]/div/div/input'
-input_wallet_name_solo_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div/form/div/div[3]/div[2]/div/div/input'
-input_password_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div/form/div/div[3]/div[2]/div/div/input'
-input_confirm_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div/form/div/div[5]/div[2]/div/div/input'
-next_button_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div/form/div/div[7]/button'
-next_button_solo_x = '//*[@id="app"]/div/div[2]/div/div/div[4]/div/div/form/div/div[5]/button'
-all_coins_block_x = '//*[@id="app"]/div/div[2]/div/div/div/div/div/div[5]'
-select_all_checkbox_x = '//*[@id="app"]/div/div[2]/div/div/div/div/div/div[7]'
+input_wallet_name_x = "//input[contains(@placeholder, 'NFT Vault')]"
+input_password_x = "//input[contains(@placeholder, 'characters in length')]"
+next_button_x = "//button[.//div[text()='Next']]"
+all_coins_block_x = "//div[starts-with(@class, 'simplebar')]"
+select_all_checkbox_x = "//div[text()='Select All']/following::input[@type='checkbox'][1]"
 
 # SCRIPT
 chop = webdriver.ChromeOptions()
@@ -81,15 +77,13 @@ def bruteforce_at_position(input_position):
         try:
             driver.find_element(By.XPATH, import_button_x).click()
 
-            user_data = driver.find_element(By.XPATH, input_user_data_x)
-            if len(user_data.find_elements(By.TAG_NAME, 'input')) == 1:
-                driver.find_element(By.XPATH, input_wallet_name_solo_x).send_keys(WALLET_NAME)
-                driver.find_element(By.XPATH, next_button_solo_x).click()
-            else:
-                driver.find_element(By.XPATH, input_wallet_name_x).send_keys(WALLET_NAME)
-                driver.find_element(By.XPATH, input_password_x).send_keys(PASSWORD)
-                driver.find_element(By.XPATH, input_confirm_x).send_keys(PASSWORD)
-                driver.find_element(By.XPATH, next_button_x).click()
+            driver.find_element(By.XPATH, input_wallet_name_x).send_keys(WALLET_NAME)
+            driver.find_element(By.XPATH, next_button_x).click()
+            password_fields = driver.find_elements(By.XPATH, input_password_x)
+            for ele in password_fields:
+                ele.send_keys(PASSWORD)
+
+            driver.find_element(By.XPATH, next_button_x).click()
             wait = WebDriverWait(driver, 10)
             element = wait.until(expected_conditions.element_to_be_clickable((By.XPATH, select_all_checkbox_x)))
             try:
