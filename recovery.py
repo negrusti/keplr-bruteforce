@@ -132,7 +132,7 @@ def bruteforce_at_position(input_position):
                 
                 break
 
-            except (NoSuchElementException, IndexError) as e:
+            except (NoSuchElementException, IndexError, TimeoutException) as e:
                 retry_count += 1
                 with open('results.txt', 'a') as file:
                     file.write(f'[ERROR] Word: {word} in position {input_position + 1}, attempt {retry_count}\n')
