@@ -62,21 +62,6 @@ if not os.path.exists(KEPLR_CRX_PATH):
     download_url(f"https://clients2.google.com/service/update2/crx?response=redirect&prodversion=119.0.6045.124&acceptformat=crx2,crx3&x=id%3D{chrome_extension_id}%26uc",
         KEPLR_CRX_PATH)
 
-# SCRIPT
-chop = webdriver.ChromeOptions()
-chop.add_experimental_option("detach", True)
-chop.add_argument("--disable-usb-devices")
-chop.add_extension(KEPLR_CRX_PATH)
-driver = webdriver.Chrome(options=chop)
-driver.implicitly_wait(10)
-
-
-# Handling Selenium quirks with extensions
-driver.get("https://example.com")
-driver.close()
-driver.switch_to.window(driver.window_handles[0])
-driver.get(f'chrome-extension://{chrome_extension_id}/register.html#')
-
 mnemo = Mnemonic("english")
 
 def bruteforce_at_position(input_position):
@@ -154,6 +139,19 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    chop = webdriver.ChromeOptions()
+    chop.add_experimental_option("detach", True)
+    chop.add_argument("--disable-usb-devices")
+    chop.add_extension(KEPLR_CRX_PATH)
+    driver = webdriver.Chrome(options=chop)
+    driver.implicitly_wait(10)
+    
+    # Handling Selenium quirks with extensions
+    driver.get("https://example.com")
+    driver.close()
+    driver.switch_to.window(driver.window_handles[0])
+    driver.get(f'chrome-extension://{chrome_extension_id}/register.html#')
+    
     if args.position:
         bruteforce_at_position(args.position - 1)
     else:
