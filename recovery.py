@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import ElementNotInteractableException
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -118,7 +119,7 @@ def bruteforce_at_position(input_position):
                 
                 break
 
-            except (NoSuchElementException, IndexError, TimeoutException) as e:
+            except (NoSuchElementException, IndexError, TimeoutException, ElementNotInteractableException) as e:
                 retry_count += 1
                 with open('results.txt', 'a') as file:
                     file.write(f'[ERROR] Word: {word} in position {input_position + 1}, attempt {retry_count}\n')
