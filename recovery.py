@@ -150,7 +150,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Recovery Script')
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--position', type=int, choices=xrange(1, 24), help='Word position')
+    group.add_argument('--position', type=int, choices=range(1, 24), help='Word position')
 
     args = parser.parse_args()
 
