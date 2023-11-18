@@ -155,7 +155,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.position:
-        bruteforce_at_position(args.position)
+        bruteforce_at_position(args.position - 1)
     else:
         for i in range(CURRENT_POSITION - 1, 12):
             bruteforce_at_position(i)
