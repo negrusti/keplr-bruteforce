@@ -37,8 +37,7 @@ In the settings.yaml file you need to configure wallet name, password and 11 exi
 From the command prompt execute the command "python recovery.py" in files directory. By default the script will try to find the missing word at any position in the recovery phrase.
 
 Available switches:
-* '--first' to brute-force only the first position
-* '--last' to brute-force only the last position
+* '--position' to brute-force only at the specified position, like --position=2
 
 ## Output
 
