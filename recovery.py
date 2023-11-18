@@ -150,15 +150,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Recovery Script')
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--first', action='store_true', help='Run only First input')
-    group.add_argument('--last', action='store_true', help='Run only Last input')
+    group.add_argument('--position', type=int, choices=xrange(1, 24), help='Word position')
 
     args = parser.parse_args()
 
-    if args.first:
-        bruteforce_at_position(0)
-    elif args.last:
-        bruteforce_at_position(11)
+    if args.position:
+        bruteforce_at_position(args.position)
     else:
         for i in range(CURRENT_POSITION - 1, 12):
             bruteforce_at_position(i)
